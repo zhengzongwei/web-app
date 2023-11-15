@@ -1,24 +1,17 @@
 package main
 
 import (
-	"backend/app/response"
-	"github.com/gin-gonic/gin"
+	"backend/app/config"
+	v1 "backend/app/router/v1"
 	"log"
-	"net/http"
 )
 
 func main() {
-	// Engin
-	router := gin.Default()
-	//router := gin.New()
+	route := v1.InitRoute()
 
-	router.GET("/", func(context *gin.Context) {
-		log.Println(">>>> hello gin start <<<<")
-		response.Response(context, http.StatusOK, 0, nil)
-	})
-	// 指定地址和端口号
-	err := router.Run("localhost:8080")
+	err := route.Run(":" + config.ProjectPort)
 	if err != nil {
-		log.Println(">>>> ERROR <<<<")
+		log.Printf("启动失败,失败原因 %s\n", err)
 	}
+
 }

@@ -21,7 +21,7 @@ var conf = new(Config)
 type Config struct {
 	Language struct {
 		Local string `toml:"local"`
-	}
+	} `toml:"language"`
 }
 
 var (
