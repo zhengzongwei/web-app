@@ -1,8 +1,10 @@
 package main
 
 import (
+	"backend/app/response"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -12,10 +14,7 @@ func main() {
 
 	router.GET("/", func(context *gin.Context) {
 		log.Println(">>>> hello gin start <<<<")
-		context.JSON(200, gin.H{
-			"code":    200,
-			"success": true,
-		})
+		response.Response(context, http.StatusOK, 0, nil)
 	})
 	// 指定地址和端口号
 	err := router.Run("localhost:8080")
