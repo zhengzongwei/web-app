@@ -19,6 +19,9 @@ const (
 	// ProjectPort 项目端口
 	ProjectPort = "9527"
 
+	// ProjectConfigPath 项目配置存放路径
+	ProjectConfigPath = "app/config"
+
 	// ProjectAccessLogFile 项目访问日志存放文件
 	// ProjectAccessLogFile = "./logs/" + ProjectName + "-access.log"
 

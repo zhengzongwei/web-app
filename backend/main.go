@@ -2,11 +2,15 @@ package main
 
 import (
 	"backend/app/config"
+	"backend/app/database"
 	v1 "backend/app/router/v1"
 	"log"
 )
 
 func main() {
+
+	database.InitDB()
+
 	route := v1.InitRoute()
 
 	err := route.Run(":" + config.ProjectPort)

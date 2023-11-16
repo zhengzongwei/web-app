@@ -14,11 +14,33 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var conf = new(Config)
 
 type Config struct {
+	MySQL struct {
+		Read struct {
+			Addr   string `toml:"addr"`
+			Port   int    `toml:"port"`
+			User   string `toml:"user"`
+			Passwd string `toml:"passwd"`
+			Name   string `toml:"name"`
+		} `toml:"read"`
+		Write struct {
+			Addr   string `toml:"addr"`
+			Port   int    `toml:"port"`
+			User   string `toml:"user"`
+			Passwd string `toml:"passwd"`
+			Name   string `toml:"name"`
+		} `toml:"write"`
+		Base struct {
+			MaxOpenConn     int           `toml:"maxOpenConn"`
+			MaxIdleConn     int           `toml:"maxIdleConn"`
+			ConnMaxLifeTime time.Duration `toml:"connMaxLifeTime"`
+		} `toml:"base"`
+	} `toml:"mysql"`
 	Language struct {
 		Local string `toml:"local"`
 	} `toml:"language"`
@@ -28,7 +50,7 @@ var (
 	//go:embed conf/dev.toml
 	devConfig []byte
 
-	//go:embed conf/prod.toml
+	//go:embed conf/dev.toml
 	prodConfig []byte
 )
 
@@ -59,9 +81,10 @@ func init() {
 	}
 
 	viper.SetConfigName(env.Active().Value())
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath(ProjectConfigPath)
 
-	configFile := "conf/" + env.Active().Value() + ".toml"
+	configFile := ProjectConfigPath + "/conf/" + env.Active().Value() + ".toml"
+
 	_, ok := IsExists(configFile)
 	if !ok {
 		if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {
