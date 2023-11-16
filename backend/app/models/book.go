@@ -15,10 +15,10 @@ type Book struct {
 	Name        string    `gorm:"column:name;not null" json:"name"`
 	Comment     string    `gorm:"column:comment;type:text" json:"comment"`
 	PublishDate string    `gorm:"column:publish_date;type:date" json:"publish_date"`
-	Pages       int       `gorm:"default:null" json:"pages"`
+	Pages       int       `gorm:"default:0" json:"pages"`
 	ISBN        string    `gorm:"unique;null" json:"isbn"`
 	CoverImage  string    `gorm:"type:text" json:"cover_image"`
-	Language    string    `gorm:"not null" json:"language"`
+	Language    string    `gorm:"null" json:"language"`
 	IsDelete    bool      `gorm:"default:0" json:"is_delete"`
 	Authors     []Author  `gorm:"many2many:book_authors" json:"authors"`
 	Publishes   []Publish `gorm:"many2many:book_publishs" json:"publishes"`

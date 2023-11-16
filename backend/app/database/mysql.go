@@ -45,7 +45,7 @@ func InitDB() {
 	SQLDB = db
 
 	// 打印SQL语句
-	SQLDB = SQLDB.Debug()
+	//SQLDB = SQLDB.Debug()
 	// 迁移数据库表
 	err = SQLDB.AutoMigrate(
 		&models.Book{},
@@ -57,5 +57,8 @@ func InitDB() {
 }
 
 func GetDB() *gorm.DB {
+	if SQLDB == nil {
+		InitDB()
+	}
 	return SQLDB
 }
