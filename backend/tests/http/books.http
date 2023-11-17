@@ -1,3 +1,7 @@
+GET http://{{host}}:{{port}}/api/v1/listbook
+Accept: application/json
+
+###
 POST http://{{host}}:{{port}}/api/v1/addbook
 Content-Type: application/json
 

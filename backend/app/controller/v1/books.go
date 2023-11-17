@@ -30,6 +30,13 @@ func AddBooks(c *gin.Context) {
 	if err != nil {
 		return
 	}
+
 	response.Response(c, http.StatusOK, 0, gin.H{"id": id})
+	return
+}
+
+func ListBooks(c *gin.Context) {
+	books := services.BookList()
+	response.Response(c, http.StatusOK, 0, gin.H{"books": books})
 	return
 }

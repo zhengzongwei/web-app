@@ -12,16 +12,16 @@ import (
 // Book 是数据库中 "books" 表的模型
 type Book struct {
 	gorm.Model
-	Name        string    `gorm:"column:name;not null" json:"name" binding:"required"`
-	Comment     string    `gorm:"column:comment;type:text" json:"comment"`
-	PublishDate string    `gorm:"column:publish_date;type:date;null;default:null" json:"publish_date"`
-	Pages       int       `gorm:"default:0" json:"pages"`
-	ISBN        string    `gorm:"null" json:"isbn"`
-	CoverImage  string    `gorm:"type:text" json:"cover_image"`
-	Language    string    `gorm:"null" json:"language"`
-	IsDelete    bool      `gorm:"default:0" json:"is_delete"`
-	Authors     []Author  `gorm:"many2many:book_authors" json:"authors"`
-	Publishes   []Publish `gorm:"many2many:book_publishes" json:"publishes"`
+	Name        string `gorm:"column:name;not null" json:"name" binding:"required"`
+	Comment     string `gorm:"column:comment;type:text" json:"comment"`
+	PublishDate string `gorm:"column:publish_date;type:date;null;default:null" json:"publish_date"`
+	Pages       int    `gorm:"default:0" json:"pages"`
+	ISBN        string `gorm:"null" json:"isbn"`
+	CoverImage  string `gorm:"type:text" json:"cover_image"`
+	Language    string `gorm:"null" json:"language"`
+	//IsDelete    bool      `gorm:"default:0" json:"is_delete"`
+	Authors   []Author  `gorm:"many2many:book_authors" json:"authors"`
+	Publishes []Publish `gorm:"many2many:book_publishes" json:"publishes"`
 }
 
 // Author 作者表
