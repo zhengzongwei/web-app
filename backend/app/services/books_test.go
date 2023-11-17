@@ -11,9 +11,9 @@ import (
 	"testing"
 )
 
-func TestService_Create(t *testing.T) {
+func TestBookCreate(t *testing.T) {
 	book := models.Book{
-		Name:    "C#程序设计",
+		Name:    "C#程序设计1",
 		Comment: "测试123",
 	}
 
@@ -22,4 +22,9 @@ func TestService_Create(t *testing.T) {
 		return
 	}
 	fmt.Printf("%d \n", result)
+}
+
+func TestBookList(t *testing.T) {
+	books := BookList()
+	fmt.Printf("111 %v \n", books)
 }

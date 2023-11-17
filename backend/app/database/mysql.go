@@ -21,14 +21,13 @@ func InitDB() {
 
 	//fmt.Printf("%v", conf.MySQL.Read)
 	mysqlConf := conf.MySQL.Read
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		mysqlConf.User,
 		mysqlConf.Passwd,
 		mysqlConf.Addr,
 		mysqlConf.Port,
 		mysqlConf.Name,
 	)
-	fmt.Println("dsn--", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Println("数据库连接失败", err)
