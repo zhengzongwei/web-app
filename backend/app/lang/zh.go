@@ -5,7 +5,9 @@
 
 package lang
 
-import "backend/app/global/status_code"
+import (
+	"backend/app/global/status_code"
+)
 
 var zhCNText = map[int]string{
 	status_code.ServerError: "内部服务器错误",

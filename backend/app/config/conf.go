@@ -81,10 +81,10 @@ func init() {
 	}
 
 	viper.SetConfigName(env.Active().Value())
-	viper.AddConfigPath(ProjectConfigPath)
+	//viper.AddConfigPath(ProjectConfigPath)
 
 	configFile := ProjectConfigPath + "/conf/" + env.Active().Value() + ".toml"
-
+	viper.AddConfigPath(configFile)
 	_, ok := IsExists(configFile)
 	if !ok {
 		if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {

@@ -5,7 +5,9 @@
 
 package lang
 
-import "backend/app/global/status_code"
+import (
+	"backend/app/global/status_code"
+)
 
 var enText = map[int]string{
 	status_code.ServerError: "Internal server error",

@@ -3,7 +3,7 @@ package main
 import (
 	"backend/app/config"
 	"backend/app/database"
-	v1 "backend/app/router/v1"
+	"backend/app/router/v1"
 	"log"
 )
 

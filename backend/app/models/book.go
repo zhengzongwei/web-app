@@ -14,7 +14,7 @@ type Book struct {
 	gorm.Model
 	Name        string    `gorm:"column:name;not null" json:"name"`
 	Comment     string    `gorm:"column:comment;type:text" json:"comment"`
-	PublishDate string    `gorm:"column:publish_date;type:date" json:"publish_date"`
+	PublishDate string    `gorm:"column:publish_date;type:date;null;default:null" json:"publish_date"`
 	Pages       int       `gorm:"default:0" json:"pages"`
 	ISBN        string    `gorm:"unique;null" json:"isbn"`
 	CoverImage  string    `gorm:"type:text" json:"cover_image"`

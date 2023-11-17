@@ -5,7 +5,9 @@
 
 package lang
 
-import "backend/app/config"
+import (
+	"backend/app/config"
+)
 
 func Text(code int) string {
 	lang := config.Get().Language.Local
