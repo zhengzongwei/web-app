@@ -11,6 +11,7 @@ import (
 	"backend/app/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 //type Books struct {
@@ -39,4 +40,31 @@ func ListBooks(c *gin.Context) {
 	books := services.BookList()
 	response.Response(c, http.StatusOK, 0, gin.H{"books": books})
 	return
+}
+
+func DetailBook(c *gin.Context) {
+
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	book := services.BookDetail(uint(id))
+	response.Response(c, http.StatusOK, 0, gin.H{"book": book})
+	return
+}
+
+func DeleteBooks(c *gin.Context) {
+
+	var books models.Books
+
+	if err := c.ShouldBindJSON(&books); err != nil {
+		response.Response(c, http.StatusBadRequest, -1, gin.H{"err": err})
+		return
+	}
+
+	for _, book := range books.BookIds {
+		_, err := services.BookDelete(&book)
+		if err != nil {
+			return
+		}
+	}
+
+	response.Response(c, http.StatusOK, 0, nil)
 }

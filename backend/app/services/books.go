@@ -44,17 +44,16 @@ func BookDetail(bookId uint) models.Book {
 	return book
 }
 
-func BookDelete(bookIds []uint) {
+func BookDelete(books *models.Book) (int64, error) {
 	// 使用软删除
 	//for _, v := range bookIds {
 	//
 	//}
-	var deletebooks []models.Book
 	database.SQLDB = database.GetDB()
-	result := database.SQLDB.Delete(&deletebooks, bookIds)
+	result := database.SQLDB.Delete(&books)
 	if result.Error != nil {
-		log.Printf("查询失败！%s\n", result.Error)
+		log.Printf("删除失败！%s\n", result.Error)
 	}
 	// 强制删除
-	return
+	return result.RowsAffected, result.Error
 }

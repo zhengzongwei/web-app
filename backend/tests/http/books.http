@@ -1,3 +1,6 @@
+GET http://{{host}}:{{port}}/api/v1/detailbook/9
+Accept: application/json
+
 GET http://{{host}}:{{port}}/api/v1/listbook
 Accept: application/json
 
@@ -7,5 +10,20 @@ Content-Type: application/json
 
 {
   "name": "Python从入门到精通"
+}
+###
+
+DELETE http://{{host}}:{{port}}/api/v1/delbook
+Content-Type: application/json
+
+{
+  "book_ids": [
+    {
+      "id": 9
+    },
+    {
+      "id": 10
+    }
+  ]
 }
 ###

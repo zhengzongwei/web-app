@@ -1,17 +1,14 @@
 // Package          models
-// @Title           book.go
+// @Title           books.go
 // @Description
 // @Author          zhengzongwei<zhengzongwei@foxmail.com> 2023/11/15 19:56
 
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 // Book 是数据库中 "books" 表的模型
 type Book struct {
-	gorm.Model
 	Name        string `gorm:"column:name;not null" json:"name" binding:"required"`
 	Comment     string `gorm:"column:comment;type:text" json:"comment"`
 	PublishDate string `gorm:"column:publish_date;type:date;null;default:null" json:"publish_date"`
@@ -22,6 +19,11 @@ type Book struct {
 	//IsDelete    bool      `gorm:"default:0" json:"is_delete"`
 	Authors   []Author  `gorm:"many2many:book_authors" json:"authors"`
 	Publishes []Publish `gorm:"many2many:book_publishes" json:"publishes"`
+	gorm.Model
+}
+
+type Books struct {
+	BookIds []Book `gorm:"foreignKey:BookID" json:"book_ids"`
 }
 
 // Author 作者表
