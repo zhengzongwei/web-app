@@ -6,26 +6,18 @@
 package services
 
 import (
+	"backend/app/models"
 	"fmt"
 	"testing"
 )
 
 func TestService_Create(t *testing.T) {
-	book := BookData{
+	book := models.Book{
 		Name:    "C#程序设计",
 		Comment: "测试123",
 	}
-	//book := []*BookData{
-	//	{
-	//		Name:    "C#程序设计",
-	//		Comment: "测试123",
-	//	},
-	//	{
-	//		Name:    "C#程序设计111",
-	//		Comment: "测试123",
-	//	},
-	//}
-	result, err := Create(&book)
+
+	result, err := BookCreate(&book)
 	if err != nil {
 		return
 	}

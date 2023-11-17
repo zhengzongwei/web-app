@@ -10,40 +10,13 @@ import (
 	"backend/app/models"
 )
 
-type BookData struct {
-	// 书名
-	Name string
-	//Authors   []byte
-	//Publishes []byte
-	Comment string
+type BookService interface {
+	BookCreate(bookData *models.Book) (int64, error)
 }
 
-//func AddBook(books) {
-//
-//}
-
-type Service interface {
-	Create(bookData *BookData) (int64, error)
-}
-
-func Create(bookData *BookData) (uint, error) {
-
-	//fmt.Printf("bookData------- %T \n", bookData)
-	book := models.Book{}
-	book.Name = bookData.Name
-	book.Comment = bookData.Comment
+func BookCreate(bookData *models.Book) (uint, error) {
 
 	database.SQLDB = database.GetDB()
-	result := database.SQLDB.Create(&book)
-	return book.ID, result.Error
+	result := database.SQLDB.Create(bookData)
+	return bookData.ID, result.Error
 }
-
-//func Create(bookData []*BookData) (int64, error) {
-//
-//	fmt.Printf("bookData------- %T \n", bookData)
-//
-//	//database.SQLDB = database.GetDB()
-//	//result := database.SQLDB.Create(&book)
-//	//return result.RowsAffected, result.Error
-//	return 0, nil
-//}

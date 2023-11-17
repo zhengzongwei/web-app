@@ -6,9 +6,9 @@
 package v1
 
 import (
+	"backend/app/models"
 	"backend/app/response"
 	"backend/app/services"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,14 +20,16 @@ import (
 
 func AddBooks(c *gin.Context) {
 
-	var book services.BookData
-	if err := c.BindJSON(&book); err != nil {
+	var book models.Book
+	if err := c.ShouldBindJSON(&book); err != nil {
 		response.Response(c, http.StatusBadRequest, -1, nil)
+		return
 	}
-	id, err := services.Create(&book)
+
+	id, err := services.BookCreate(&book)
 	if err != nil {
 		return
 	}
-	fmt.Printf("%s", book)
 	response.Response(c, http.StatusOK, 0, gin.H{"id": id})
+	return
 }
