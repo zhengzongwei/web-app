@@ -28,3 +28,16 @@ func TestBookList(t *testing.T) {
 	books := BookList()
 	fmt.Printf("111 %v \n", books)
 }
+
+func TestBookDetail(t *testing.T) {
+	bookId := 9
+	book := BookDetail(uint(bookId))
+	fmt.Printf("111 %v \n", book)
+
+}
+
+func TestBookDelete(t *testing.T) {
+	bookIds := []uint{9, 10}
+	BookDelete(bookIds)
+
+}

@@ -12,15 +12,15 @@ import (
 )
 
 type BookService interface {
-	BookCreate(bookData *models.Book) (int64, error)
+	BookCreate(bookData *models.Book) (uint, error)
 	BookList()
+	BookDetail(bookID models.Book)
 }
 
-func BookCreate(bookData *models.Book) (int64, error) {
-
+func BookCreate(bookData *models.Book) (uint, error) {
 	database.SQLDB = database.GetDB()
 	result := database.SQLDB.Create(bookData)
-	return int64(bookData.ID), result.Error
+	return bookData.ID, result.Error
 }
 
 func BookList() []models.Book {
@@ -32,4 +32,29 @@ func BookList() []models.Book {
 
 	}
 	return books
+}
+
+func BookDetail(bookId uint) models.Book {
+	var book models.Book
+	database.SQLDB = database.GetDB()
+	result := database.SQLDB.First(&book, bookId)
+	if result.Error != nil {
+		log.Printf("查询失败！%s\n", result.Error)
+	}
+	return book
+}
+
+func BookDelete(bookIds []uint) {
+	// 使用软删除
+	//for _, v := range bookIds {
+	//
+	//}
+	var deletebooks []models.Book
+	database.SQLDB = database.GetDB()
+	result := database.SQLDB.Delete(&deletebooks, bookIds)
+	if result.Error != nil {
+		log.Printf("查询失败！%s\n", result.Error)
+	}
+	// 强制删除
+	return
 }
