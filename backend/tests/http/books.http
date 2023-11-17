@@ -1,0 +1,8 @@
+POST http://{{host}}:{{port}}/api/v1/addbook
+Content-Type: application/json
+
+{
+  "name": "Python从入门到精通",
+  "comment": "content"
+}
+###

@@ -13,5 +13,15 @@ import (
 func InitRoute() *gin.Engine {
 	router := gin.Default()
 	router.GET("/", controller.IndexApi)
+	api := router.Group("api")
+	{
+		v1 := api.Group("v1")
+		{
+			v1.POST("addbook", controller.AddBooks)
+
+		}
+
+	}
+
 	return router
 }

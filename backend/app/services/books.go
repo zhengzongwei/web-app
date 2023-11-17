@@ -26,7 +26,7 @@ type Service interface {
 	Create(bookData *BookData) (int64, error)
 }
 
-func Create(bookData *BookData) (int64, error) {
+func Create(bookData *BookData) (uint, error) {
 
 	//fmt.Printf("bookData------- %T \n", bookData)
 	book := models.Book{}
@@ -35,7 +35,7 @@ func Create(bookData *BookData) (int64, error) {
 
 	database.SQLDB = database.GetDB()
 	result := database.SQLDB.Create(&book)
-	return result.RowsAffected, result.Error
+	return book.ID, result.Error
 }
 
 //func Create(bookData []*BookData) (int64, error) {
