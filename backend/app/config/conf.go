@@ -12,8 +12,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"io"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -55,10 +53,10 @@ var (
 )
 
 // IsExists 文件是否存在
-func IsExists(path string) (os.FileInfo, bool) {
-	f, err := os.Stat(path)
-	return f, err == nil || os.IsExist(err)
-}
+//func IsExists(path string) (os.FileInfo, bool) {
+//	f, err := os.Stat(path)
+//	return f, err == nil || os.IsExist(err)
+//}
 
 func init() {
 	var r io.Reader
@@ -81,31 +79,32 @@ func init() {
 	}
 
 	viper.SetConfigName(env.Active().Value())
-	//viper.AddConfigPath(ProjectConfigPath)
+	viper.AddConfigPath(ProjectConfigPath)
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("/backend/app/config/conf")
 
-	configFile := ProjectConfigPath + "/conf/" + env.Active().Value() + ".toml"
-	viper.AddConfigPath(configFile)
-	_, ok := IsExists(configFile)
-	if !ok {
-		if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {
-			panic(err)
-		}
-		f, err := os.Create(configFile)
-		if err != nil {
-			panic(err)
-		}
-		defer func(f *os.File) {
-			err := f.Close()
-			if err != nil {
-
-			}
-		}(f)
-
-		if err := viper.WriteConfig(); err != nil {
-			panic(err)
-		}
-
-	}
+	//configFile := ProjectConfigPath + "/conf/" + env.Active().Value() + ".toml"
+	//_, ok := IsExists(configFile)
+	//if !ok {
+	//	if err := os.MkdirAll(filepath.Dir(configFile), 0766); err != nil {
+	//		panic(err)
+	//	}
+	//	f, err := os.Create(configFile)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	defer func(f *os.File) {
+	//		err := f.Close()
+	//		if err != nil {
+	//
+	//		}
+	//	}(f)
+	//
+	//	if err := viper.WriteConfig(); err != nil {
+	//		panic(err)
+	//	}
+	//
+	//}
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		if err := viper.Unmarshal(conf); err != nil {

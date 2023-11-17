@@ -16,7 +16,7 @@ type Book struct {
 	Comment     string    `gorm:"column:comment;type:text" json:"comment"`
 	PublishDate string    `gorm:"column:publish_date;type:date;null;default:null" json:"publish_date"`
 	Pages       int       `gorm:"default:0" json:"pages"`
-	ISBN        string    `gorm:"unique;null" json:"isbn"`
+	ISBN        string    `gorm:"null" json:"isbn"`
 	CoverImage  string    `gorm:"type:text" json:"cover_image"`
 	Language    string    `gorm:"null" json:"language"`
 	IsDelete    bool      `gorm:"default:0" json:"is_delete"`
