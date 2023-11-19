@@ -1,5 +1,6 @@
-GET http://{{host}}:{{port}}/api/v1/detailbook/9
+GET http://{{host}}:{{port}}/api/v1/detailbook/3
 Accept: application/json
+###
 
 GET http://{{host}}:{{port}}/api/v1/listbook
 Accept: application/json
@@ -9,7 +10,19 @@ POST http://{{host}}:{{port}}/api/v1/addbook
 Content-Type: application/json
 
 {
-  "name": "Python从入门到精通"
+  "books": [
+    {
+      "name": "C# 从入门到精通11",
+      "authors": [
+        {
+          "name": "NAT"
+        },
+        {
+          "name": "ZZW"
+        }
+      ]
+    }
+  ]
 }
 ###
 
@@ -19,10 +32,10 @@ Content-Type: application/json
 {
   "book_ids": [
     {
-      "id": 9
+      "id": 2
     },
     {
-      "id": 10
+      "id": 3
     }
   ]
 }

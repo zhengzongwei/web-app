@@ -6,54 +6,125 @@
 package services
 
 import (
-	"backend/app/database"
 	"backend/app/models"
+	"errors"
+	"gorm.io/gorm"
 	"log"
 )
 
-type BookService interface {
-	BookCreate(bookData *models.Book) (uint, error)
-	BookList()
-	BookDetail(bookID models.Book)
+type DBBookService struct {
+	DB *gorm.DB
 }
 
-func BookCreate(bookData *models.Book) (uint, error) {
-	database.SQLDB = database.GetDB()
-	result := database.SQLDB.Create(bookData)
-	return bookData.ID, result.Error
+func (s *DBBookService) GetOrCreateAuthor(tx *gorm.DB, authorName string) (*models.Author, error) {
+	var existingAuthor models.Author
+	if err := tx.Where("name = ?", authorName).First(&existingAuthor).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			// 其他查询错误，回滚并返回错误
+			tx.Rollback()
+			log.Printf("Error querying author: %v", err)
+			return nil, err
+		}
+
+		// 作者不存在，创建作者
+		if err := tx.Where(models.Author{Name: authorName}).FirstOrCreate(&existingAuthor).Error; err != nil {
+			// 创建作者失败，回滚并返回错误
+			tx.Rollback()
+			return nil, err
+		}
+	}
+
+	return &existingAuthor, nil
 }
 
-func BookList() []models.Book {
+func (s *DBBookService) GetOrCreateBook(tx *gorm.DB, authors []*models.Author, book models.Book) (*models.Book, error) {
+	var existingBook models.Book
+	if err := tx.Where("name = ?", book.Name).First(&existingBook).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			// 其他查询错误，回滚并返回错误
+			tx.Rollback()
+			log.Printf("Error querying book: %v", err)
+			return &existingBook, err
+		}
+
+		// 书籍不存在，创建书籍
+		book.Authors = authors // 设置关联的作者
+		if err := tx.Create(&book).Error; err != nil {
+			// 创建书籍失败，回滚并返回错误
+			tx.Rollback()
+			return &book, err
+		}
+	}
+	return &book, nil
+}
+
+func (s *DBBookService) BookCreate(bookData *[]models.Book) error {
+	tx := s.DB.Begin()
+
+	for _, book := range *bookData {
+		// 处理作者
+		var authors []*models.Author
+		for _, author := range book.Authors {
+			existingAuthor, err := s.GetOrCreateAuthor(tx, author.Name)
+			if err != nil {
+				return err
+			}
+			authors = append(authors, existingAuthor)
+		}
+
+		// 检查书籍是否已存在
+		_, err := s.GetOrCreateBook(tx, authors, book)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 提交事务
+	tx.Commit()
+	return nil
+}
+
+func (s *DBBookService) BookList() *[]models.Book {
 	var books []models.Book
-	database.SQLDB = database.GetDB()
-	result := database.SQLDB.Find(&books)
+
+	result := s.DB.Preload("Authors").Find(books)
 	if result.Error != nil {
 		log.Printf("查询失败！%s\n", result.Error)
-
 	}
-	return books
+	return &books
 }
 
-func BookDetail(bookId uint) models.Book {
+func (s *DBBookService) BookDetail(bookId uint) models.Book {
 	var book models.Book
-	database.SQLDB = database.GetDB()
-	result := database.SQLDB.First(&book, bookId)
+
+	result := s.DB.First(&book, bookId)
 	if result.Error != nil {
 		log.Printf("查询失败！%s\n", result.Error)
 	}
 	return book
 }
 
-func BookDelete(books *models.Book) (int64, error) {
+func (s *DBBookService) BookDelete(books *[]models.Book) (int64, error) {
 	// 使用软删除
-	//for _, v := range bookIds {
-	//
-	//}
-	database.SQLDB = database.GetDB()
-	result := database.SQLDB.Delete(&books)
-	if result.Error != nil {
-		log.Printf("删除失败！%s\n", result.Error)
+	tx := *s.DB.Begin()
+	for _, book := range *books {
+		// 	预加载关联的作者数据
+		if err := tx.Preload("Authors").First(book, book.ID).Error; err != nil {
+			tx.Rollback()
+			return 0, err
+		}
+
+		if err := tx.Model(book).Association("Authors").Clear(); err != nil {
+			tx.Rollback()
+			return 0, err
+		}
+
+		if err := tx.Delete(book).Error; err != nil {
+			tx.Rollback()
+			return 0, err
+		}
 	}
-	// 强制删除
-	return result.RowsAffected, result.Error
+	tx.Commit()
+	return int64(len(*books)), nil
+
 }

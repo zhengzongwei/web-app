@@ -14,7 +14,7 @@ import (
 	"log"
 )
 
-var SQLDB *gorm.DB
+var DB *gorm.DB
 
 func InitDB() {
 	conf := config.Get()
@@ -32,6 +32,7 @@ func InitDB() {
 	if err != nil {
 		log.Println("数据库连接失败", err)
 	}
+
 	//db.SingularTable(true)
 	////设置连接池
 	////空闲
@@ -41,12 +42,12 @@ func InitDB() {
 	////超时
 	//db.DB().SetConnMaxLifetime(time.Second * 30)
 
-	SQLDB = db
+	DB = db
 
 	// 打印SQL语句
-	//SQLDB = SQLDB.Debug()
+	DB.Debug()
 	// 迁移数据库表
-	err = SQLDB.AutoMigrate(
+	err = DB.AutoMigrate(
 		&models.Book{},
 		&models.Author{},
 	)
@@ -56,8 +57,8 @@ func InitDB() {
 }
 
 func GetDB() *gorm.DB {
-	if SQLDB == nil {
+	if DB == nil {
 		InitDB()
 	}
-	return SQLDB
+	return DB
 }

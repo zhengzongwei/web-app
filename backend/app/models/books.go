@@ -17,13 +17,17 @@ type Book struct {
 	CoverImage  string `gorm:"type:text" json:"cover_image"`
 	Language    string `gorm:"null" json:"language"`
 	//IsDelete    bool      `gorm:"default:0" json:"is_delete"`
-	Authors   []Author  `gorm:"many2many:book_authors" json:"authors"`
-	Publishes []Publish `gorm:"many2many:book_publishes" json:"publishes"`
+	Authors   []*Author  `gorm:"many2many:book_authors;" json:"authors"`
+	Publishes []*Publish `gorm:"many2many:book_publishes;" json:"publishes"`
 	gorm.Model
 }
 
-type Books struct {
-	BookIds []Book `gorm:"foreignKey:BookID" json:"book_ids"`
+type BookList struct {
+	Books []Book `json:"books"`
+}
+
+type DelBookList struct {
+	BookIds []Book `json:"book_ids"`
 }
 
 // Author 作者表

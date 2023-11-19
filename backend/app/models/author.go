@@ -8,9 +8,13 @@ package models
 import "gorm.io/gorm"
 
 type Author struct {
+	Name  string  `gorm:"column:name;not null" json:"name" binding:"required"`
+	Phone string  `gorm:"null" json:"phone"`
+	Addr  string  `gorm:"null" json:"addr"`
+	Books []*Book `gorm:"many2many:book_authors;" json:"books"`
 	gorm.Model
-	Name  string `gorm:"column:name;not null" json:"name" binding:"required"`
-	Phone string `gorm:"null" json:"phone"`
-	Addr  string `gorm:"null" json:"addr"`
-	Books []Book `gorm:"many2many:book_authors" json:"books"`
+}
+
+type AuthorList struct {
+	Authors []*Author `json:"authors"`
 }
