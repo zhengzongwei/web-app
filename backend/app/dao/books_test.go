@@ -15,7 +15,7 @@ import (
 func TestBookDAO_BookList(t *testing.T) {
 	db := database.GetDB()
 	bookDao := &BookDAO{DB: db}
-	list, err := bookDao.BookList()
+	list, err := bookDao.ListBook()
 	if err != nil {
 		return
 	}
@@ -41,7 +41,7 @@ func TestBookDAO_BookCreate(t *testing.T) {
 			},
 		},
 	}
-	err := bookDao.BookCreate(books)
+	err := bookDao.CreateBook(books)
 	if err != nil {
 		t.Fatalf("Failed to create books: %v", err)
 	}
@@ -51,7 +51,7 @@ func TestBookDAO_BatchBookDelete(t *testing.T) {
 	var bookIDs []uint
 	db := database.GetDB()
 	bookDao := &BookDAO{DB: db}
-	books, err := bookDao.BookList()
+	books, err := bookDao.ListBook()
 	if err != nil {
 		return
 	}
@@ -60,7 +60,7 @@ func TestBookDAO_BatchBookDelete(t *testing.T) {
 		bookIDs = append(bookIDs, book.ID)
 	}
 
-	err = bookDao.BatchBookDelete(bookIDs)
+	err = bookDao.DeleteBook(bookIDs)
 	if err != nil {
 		return
 	}

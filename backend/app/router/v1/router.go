@@ -18,10 +18,11 @@ func InitRoute() *gin.Engine {
 	{
 		v1 := api.Group("v1")
 		{
-			v1.GET("listbook", books.ListBooks)
-			//v1.GET("detailbook/:id", books.DetailBook)
-			v1.POST("addbook", books.AddBooks)
-			//v1.DELETE("delbook", books.DeleteBooks)
+			v1.GET("listbook", books.ListBook)
+			v1.GET("detailbook/:id", books.DetailBook)
+			v1.POST("addbook", books.CreateBook)
+			v1.DELETE("delbook", books.DeleteBook)
+			v1.PUT("editbook/:id", books.EditBook)
 
 		}
 

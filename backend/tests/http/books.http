@@ -1,5 +1,6 @@
-GET http://{{host}}:{{port}}/api/v1/detailbook/3
+GET http://{{host}}:{{port}}/api/v1/detailbook/52
 Accept: application/json
+
 ###
 
 GET http://{{host}}:{{port}}/api/v1/listbook
@@ -24,6 +25,7 @@ Content-Type: application/json
     }
   ]
 }
+
 ###
 
 DELETE http://{{host}}:{{port}}/api/v1/delbook
@@ -39,4 +41,23 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+
+###
+PUT http://{{host}}:{{port}}/api/v1/editbook/55
+Content-Type: application/json
+
+{
+  "name": "C# 从入门到精通",
+  "authors": [
+    {
+      "name": "NAT"
+    },
+    {
+      "name": "ZZW"
+    }
+  ]
+}
+
 ###

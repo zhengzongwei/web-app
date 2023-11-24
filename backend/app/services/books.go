@@ -19,7 +19,7 @@ type BookService struct {
 
 func NewBookService(db *gorm.DB) *BookService {
 	return &BookService{
-		BookDAO:   &dao.BookDAO{DB: db},
+		BookDAO:   &dao.BookDAO{DB: db, AuthorDAO: &dao.AuthorDAO{DB: db}},
 		AuthorDAO: &dao.AuthorDAO{DB: db},
 		DB:        db,
 	}
@@ -33,148 +33,22 @@ func (s *BookService) GetOrCreateBook(authors []*models.Author, book models.Book
 	return s.BookDAO.GetOrCreateBook(authors, book)
 }
 
-func (s *BookService) BookCreate(bookData *[]models.Book) error {
-	tx := s.DB.Begin()
-
-	for _, book := range *bookData {
-		// 处理作者
-		var authors []*models.Author
-		for _, author := range book.Authors {
-			// 先创建作者
-			existingAuthor, err := s.GetOrCreateAuthor(author.Name)
-			if err != nil {
-				tx.Rollback()
-				return err
-			}
-			authors = append(authors, existingAuthor)
-		}
-
-		// 创建书籍并传递作者信息
-		_, err := s.GetOrCreateBook(authors, book)
-		if err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	// 提交事务
-	tx.Commit()
-	return nil
+func (s *BookService) CreateBook(bookData []models.Book) error {
+	return s.BookDAO.CreateBook(bookData)
 }
 
-func (s *BookService) BookList() ([]models.Book, error) {
-	return s.BookDAO.BookList()
+func (s *BookService) ListBook() ([]models.Book, error) {
+	return s.BookDAO.ListBook()
 }
 
-//func (s *DBBookService) GetOrCreateAuthor(tx *gorm.DB, authorName string) (*models.Author, error) {
-//	var existingAuthor models.Author
-//	if err := tx.Where("name = ?", authorName).First(&existingAuthor).Error; err != nil {
-//		if !errors.Is(err, gorm.ErrRecordNotFound) {
-//			// 其他查询错误，回滚并返回错误
-//			tx.Rollback()
-//			log.Printf("Error querying author: %v", err)
-//			return nil, err
-//		}
-//
-//		// 作者不存在，创建作者
-//		if err := tx.Where(models.Author{Name: authorName}).FirstOrCreate(&existingAuthor).Error; err != nil {
-//			// 创建作者失败，回滚并返回错误
-//			tx.Rollback()
-//			return nil, err
-//		}
-//	}
-//
-//	return &existingAuthor, nil
-//}
-//
-//func (s *DBBookService) GetOrCreateBook(tx *gorm.DB, authors []*models.Author, book models.Book) (*models.Book, error) {
-//	var existingBook models.Book
-//	if err := tx.Where("name = ?", book.Name).First(&existingBook).Error; err != nil {
-//		if !errors.Is(err, gorm.ErrRecordNotFound) {
-//			// 其他查询错误，回滚并返回错误
-//			tx.Rollback()
-//			log.Printf("Error querying book: %v", err)
-//			return &existingBook, err
-//		}
-//
-//		// 书籍不存在，创建书籍
-//		book.Authors = authors // 设置关联的作者
-//		if err := tx.Create(&book).Error; err != nil {
-//			// 创建书籍失败，回滚并返回错误
-//			tx.Rollback()
-//			return &book, err
-//		}
-//	}
-//	return &book, nil
-//}
-//
-//func (s *DBBookService) BookCreate(bookData *[]models.Book) error {
-//	tx := s.DB.Begin()
-//
-//	for _, book := range *bookData {
-//		// 处理作者
-//		var authors []*models.Author
-//		for _, author := range book.Authors {
-//			existingAuthor, err := s.GetOrCreateAuthor(tx, author.Name)
-//			if err != nil {
-//				return err
-//			}
-//			authors = append(authors, existingAuthor)
-//		}
-//
-//		// 检查书籍是否已存在
-//		_, err := s.GetOrCreateBook(tx, authors, book)
-//		if err != nil {
-//			return err
-//		}
-//	}
-//
-//	// 提交事务
-//	tx.Commit()
-//	return nil
-//}
-//
-//func (s *DBBookService) BookList() *[]models.Book {
-//	var books []models.Book
-//
-//	result := s.DB.Preload("Authors").Find(books)
-//	if result.Error != nil {
-//		log.Printf("查询失败！%s\n", result.Error)
-//	}
-//	return &books
-//}
-//
-//func (s *DBBookService) BookDetail(bookId uint) models.Book {
-//	var book models.Book
-//
-//	result := s.DB.First(&book, bookId)
-//	if result.Error != nil {
-//		log.Printf("查询失败！%s\n", result.Error)
-//	}
-//	return book
-//}
-//
-//func (s *DBBookService) BookDelete(books *[]models.Book) (int64, error) {
-//	// 使用软删除
-//	tx := *s.DB.Begin()
-//	for _, book := range *books {
-//		// 	预加载关联的作者数据
-//		if err := tx.Preload("Authors").First(book, book.ID).Error; err != nil {
-//			tx.Rollback()
-//			return 0, err
-//		}
-//
-//		if err := tx.Model(book).Association("Authors").Clear(); err != nil {
-//			tx.Rollback()
-//			return 0, err
-//		}
-//
-//		if err := tx.Delete(book).Error; err != nil {
-//			tx.Rollback()
-//			return 0, err
-//		}
-//	}
-//	tx.Commit()
-//	return int64(len(*books)), nil
-//
-//}
+func (s *BookService) DeleteBook(bookIDs []uint) error {
+	return s.BookDAO.DeleteBook(bookIDs)
+}
+
+func (s *BookService) DetailBook(bookID uint) (*models.Book, error) {
+	return s.BookDAO.GetBookById(bookID)
+}
+
+func (s *BookService) EditBook(bookID uint, updatedBook *models.Book) error {
+	return s.BookDAO.EditBook(bookID, updatedBook)
+}
