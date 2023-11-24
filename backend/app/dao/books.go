@@ -160,24 +160,24 @@ func (d *BookDAO) DeleteBook(bookIDs []uint) error {
 func (d *BookDAO) EditBook(bookID uint, updatedBook *models.Book) error {
 
 	// EditBook 用于编辑书籍信息，支持修改关联的作者
-	var existingBook models.Book
+	var book models.Book
 
 	// 开启事务
 	tx := d.DB.Begin()
 
 	// 使用 First 查找要编辑的书籍
-	if err := tx.First(&existingBook, bookID).Error; err != nil {
+	if err := tx.First(&book, bookID).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	// 更新书籍的基本信息
 	if updatedBook.Name != "" {
-		existingBook.Name = updatedBook.Name
+		book.Name = updatedBook.Name
 
 	}
 	if updatedBook.Comment != "" {
-		existingBook.Comment = updatedBook.Comment
+		book.Comment = updatedBook.Comment
 	}
 
 	//existingBook.PublishDate = updatedBook.PublishDate
@@ -187,7 +187,7 @@ func (d *BookDAO) EditBook(bookID uint, updatedBook *models.Book) error {
 	//existingBook.Language = updatedBook.Language
 
 	// 先清空关联的作者
-	if err := tx.Model(&existingBook).Association("Authors").Clear(); err != nil {
+	if err := tx.Model(&book).Association("Authors").Clear(); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -199,11 +199,11 @@ func (d *BookDAO) EditBook(bookID uint, updatedBook *models.Book) error {
 			tx.Rollback()
 			return err
 		}
-		existingBook.Authors = append(existingBook.Authors, existingAuthor)
+		book.Authors = append(book.Authors, existingAuthor)
 	}
 
 	// 提交事务
-	if err := tx.Save(&existingBook).Commit().Error; err != nil {
+	if err := tx.Save(&book).Commit().Error; err != nil {
 		return err
 	}
 
