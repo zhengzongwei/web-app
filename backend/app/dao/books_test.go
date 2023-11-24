@@ -30,7 +30,7 @@ func TestBookDAO_BookCreate(t *testing.T) {
 	}
 	books := []models.Book{
 		{
-			Name: "Java 测试",
+			Name: "Java 测试1",
 			Authors: []*models.Author{
 				{
 					Name: "test1",
@@ -44,5 +44,24 @@ func TestBookDAO_BookCreate(t *testing.T) {
 	err := bookDao.BookCreate(books)
 	if err != nil {
 		t.Fatalf("Failed to create books: %v", err)
+	}
+}
+
+func TestBookDAO_BatchBookDelete(t *testing.T) {
+	var bookIDs []uint
+	db := database.GetDB()
+	bookDao := &BookDAO{DB: db}
+	books, err := bookDao.BookList()
+	if err != nil {
+		return
+	}
+
+	for _, book := range books {
+		bookIDs = append(bookIDs, book.ID)
+	}
+
+	err = bookDao.BatchBookDelete(bookIDs)
+	if err != nil {
+		return
 	}
 }

@@ -77,22 +77,63 @@ func (d *BookDAO) BookCreate(books []models.Book) error {
 			books[i].Authors[j] = existingAuthor
 		}
 
-		//// 检查是否存在相同的书籍名称和作者
-		//var count int64
-		//if err := d.DB.Model(&models.Book{}).
-		//	Joins("JOIN authors ON books.author_id = authors.id").
-		//	Where("books.name = ? AND authors.id = ?", books[i].Name, books[i].Authors[0].ID).
-		//	Count(&count).Error; err != nil {
-		//	return err
-		//}
-		//if count > 0 {
-		//	return fmt.Errorf("Duplicate book with the same name and author")
-		//}
+		// 检查是否存在相同的书籍名称、作者和出版社
+		var count int64
+		if err := d.DB.Model(&models.Book{}).
+			Joins("JOIN book_authors ON books.id = book_authors.book_id").
+			Joins("JOIN authors ON book_authors.author_id = authors.id").
+			//Joins("JOIN book_publishes ON books.id = book_publishes.book_id").
+			//Joins("JOIN publishes ON book_publishes.publish_id = publishes.id").
+			//Where("books.name = ? AND authors.id = ? AND publishes.id = ?", books[i].Name, books[i].Authors[0].ID, books[i].Publishes[0].ID).
+			Where("books.name = ? AND authors.id = ?", books[i].Name, books[i].Authors[0].ID).
+			Count(&count).Error; err != nil {
+			return err
+		}
 
+		if count > 0 {
+			// 存在相同的书籍名称、作者和出版社
+			return errors.New("duplicate book with the same name, author")
+		}
 		// 插入书籍
 		if err := d.DB.Create(&books[i]).Error; err != nil {
 			return err
 		}
 	}
+	return nil
+}
+
+func (d *BookDAO) BatchBookDelete(bookIDs []uint) error {
+	// 开启事务
+	tx := d.DB.Begin()
+
+	for _, bookID := range bookIDs {
+		var book models.Book
+		if err := tx.Preload("Authors").Preload("Publishes").First(&book, bookID).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// 删除关联的作者
+		if err := tx.Model(&book).Association("Authors").Clear(); err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		//// 删除关联的出版社
+		//if err := tx.Model(&book).Association("Publishes").Clear(); err != nil {
+		//	tx.Rollback()
+		//	return err
+		//}
+
+		// 删除书籍（软删除）
+		if err := tx.Delete(&book).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	// 提交事务
+	tx.Commit()
+
 	return nil
 }
