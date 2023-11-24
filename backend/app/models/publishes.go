@@ -1,5 +1,5 @@
 // Package          models
-// @Title           publish.go
+// @Title           publishes.go
 // @Description
 // @Author          zhengzongwei<zhengzongwei@foxmail.com> 2023/11/17 14:50
 

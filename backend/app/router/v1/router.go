@@ -7,6 +7,7 @@ package v1
 
 import (
 	controller "backend/app/controller/v1"
+	"backend/app/controller/v1/books"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,10 +18,10 @@ func InitRoute() *gin.Engine {
 	{
 		v1 := api.Group("v1")
 		{
-			v1.GET("listbook", controller.ListBooks)
-			v1.GET("detailbook/:id", controller.DetailBook)
-			v1.POST("addbook", controller.AddBooks)
-			v1.DELETE("delbook", controller.DeleteBooks)
+			v1.GET("listbook", books.ListBooks)
+			//v1.GET("detailbook/:id", books.DetailBook)
+			v1.POST("addbook", books.AddBooks)
+			//v1.DELETE("delbook", books.DeleteBooks)
 
 		}
 
