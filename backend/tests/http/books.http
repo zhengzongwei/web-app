@@ -1,19 +1,21 @@
-GET http://{{host}}:{{port}}/api/v1/detailbook/52
+GET http://{{base_url}}/book/list
 Accept: application/json
 
 ###
 
-GET http://{{host}}:{{port}}/api/v1/listbook
+
+GET http://{{base_url}}/book/detail/52
 Accept: application/json
 
 ###
-POST http://{{host}}:{{port}}/api/v1/addbook
+
+POST http://{{base_url}}/book/create
 Content-Type: application/json
 
 {
   "books": [
     {
-      "name": "C# 从入门到精通11",
+      "name": "C# 从入门到精通121",
       "authors": [
         {
           "name": "NAT"
@@ -28,7 +30,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://{{host}}:{{port}}/api/v1/delbook
+DELETE http://{{base_url}}/book/delete
 Content-Type: application/json
 
 {
@@ -44,8 +46,7 @@ Content-Type: application/json
 
 ###
 
-###
-PUT http://{{host}}:{{port}}/api/v1/editbook/55
+PUT http://{{base_url}}/book/edit/55
 Content-Type: application/json
 
 {
