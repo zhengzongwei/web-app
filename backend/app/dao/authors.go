@@ -122,3 +122,9 @@ func (d *AuthorDAO) DeleteAuthor(authorIDs []uint) error {
 
 	return nil
 }
+
+func (d *AuthorDAO) GetAuthorById(id uint) (*models.Author, error) {
+	var author models.Author
+	err := d.DB.Preload("Books").Where("id = ?", id).First(&author).Error
+	return &author, err
+}

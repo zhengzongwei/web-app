@@ -30,6 +30,9 @@ func InitRoute() *gin.Engine {
 		{
 			author.GET("list", authors.ListAuthor)
 			author.POST("create", authors.CreateAuthor)
+			author.DELETE("delete", authors.DeleteAuthor)
+			author.PUT("edit/:id", authors.EditAuthor)
+			author.GET("detail/:id", authors.DetailAuthor)
 
 		}
 

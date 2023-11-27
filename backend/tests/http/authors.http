@@ -1,0 +1,14 @@
+
+POST http://{{base_url}}/author/create
+Content-Type: application/json
+
+{
+  "authors": [
+    {
+      "name": "NAT111"
+    },
+    {
+      "name": "ZZW222"
+    }
+  ]
+}

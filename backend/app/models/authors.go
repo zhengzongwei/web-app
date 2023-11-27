@@ -14,7 +14,3 @@ type Author struct {
 	Books []*Book `gorm:"many2many:book_authors;" json:"books"`
 	gorm.Model
 }
-
-type AuthorList struct {
-	Authors []*Author `json:"authors"`
-}
